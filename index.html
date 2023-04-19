@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <title>BAR CHART</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body { 
+        margin: 0; 
+        padding: 0; 
+		background-color: #707682;
+      }
+      #map { 
+        position: absolute; 
+        top: 0; 
+        bottom: 0; 
+		left: 0;
+        width: 80%; 
+      }
+	  
+	  #reviews {
+	  margin-left: 82%;
+	  margin-right: 2%;
+	  margin-top: 2%;
+	  font-family: Verdana, sans-serif;;
+	  }
+	  
+	  #title {
+	  margin-left: 82%;
+	  margin-right: 2%;
+	  margin-top: 0.5%;
+	  font-family: Verdana, sans-serif;;
+	  font-size: xx-large;
+	  color: white;
+	  }
+	  
+	  #title:hover {color:#ff99b3;}
+	  
+    </style>
+  </head>
+  <body>
+	<p id = 'title'>the bar chart</p>
+	<p id = 'reviews'> </p>
+    <div id='map'></div>
+    <script>
+    // The value for 'accessToken' begins with 'pk...'
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2Ftc21nciIsImEiOiJjbGduOXIxcGcwZGp2M2VudDN0OXk3cWw5In0.UiSK6syLTB30dzrXjxl7iw'; 
+    const map = new mapboxgl.Map({
+      container: 'map',
+      // Replace YOUR_STYLE_URL with your style URL.
+      style: 'mapbox://styles/samsmgr/clgo08y72007f01qtfq2b5oa9', 
+      center: [-73.9623606, 40.7392687],
+      zoom: 11.5
+    });
+
+
+	// Change it back to a pointer when it leaves.
+	map.on('mouseleave', 'Bars', () => {
+	map.getCanvas().style.cursor = '';
+	});
+	
+	const popup = new mapboxgl.Popup({
+	closeButton: false,
+	closeOnClick: false
+	});
+	 
+	map.on('mouseenter', 'Bars', (e) => {
+	// Change the cursor style as a UI indicator.
+	map.getCanvas().style.cursor = 'pointer';
+	popup.remove();
+	 
+	// Copy coordinates array.
+	const coordinates = e.features[0].geometry.coordinates.slice();
+	const description = e.features[0].properties.Zipcode + "<br>Average Rating: " + e.features[0].properties.Avg;
+	 
+	// Ensure that if the map is zoomed out such that multiple
+	// copies of the feature are visible, the popup appears
+	// over the copy being pointed to.
+	while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+	coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+	}
+	 
+	// Populate the popup and set its coordinates
+	// based on the feature found.
+	popup.setLngLat(coordinates).setHTML(description).addTo(map);
+	});
+	map.on('mouseleave', 'Bars', () => {
+	map.getCanvas().style.cursor = '';
+	popup.remove();
+	});
+	
+	map.on('click', (event) => {
+	  // If the user clicked on one of your markers, get its information.
+	  const features = map.queryRenderedFeatures(event.point, {
+		layers: ['Bars'] // replace with your layer name
+	  });
+	  if (!features.length) {
+		return;
+	  }
+	  const feature = features[0];
+	  
+	  document.getElementById('reviews').innerHTML = `<b>${feature.properties.Zipcode}</b><br>${feature.properties.Address}<br><br>Average Rating: ${feature.properties.Avg}<br><br><i>Reviews:</i><br>${feature.properties.Reviews}`;
+	  
+	});
+	
+
+    </script>
+  </body>
+</html>
