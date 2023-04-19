@@ -21,11 +21,20 @@
       }
 	  
 	  #reviews {
-	  margin-left: 82%;
-	  margin-right: 2%;
-	  margin-top: 2%;
-	  font-family: Verdana, sans-serif;;
+	  font-family: Verdana, sans-serif;
+	  margin-right: 0.4%;
 	  }
+	  
+	  #submissions {
+	  position: absolute;
+	  left: 84%;
+	  top: 94%;
+	  font-family: Verdana, sans-serif;
+	  color: #ff99b3;
+	  font-size: large;
+	  }
+	  
+	  #submissions:hover {color:white; cursor:pointer;}
 	  
 	  #title {
 	  margin-left: 82%;
@@ -40,13 +49,31 @@
 	  
 	  #reviews:hover {cursor:default;}
 	  
+	  #conty {
+		height: 80%; 
+		width:17.5%; 
+		position: absolute;
+		left: 82%;
+		top: 10%;
+		overflow-y: scroll;
+	  }
+	  
     </style>
   </head>
   <body>
 	<p id = 'title'>the bar chart</p>
-	<p id = 'reviews'> </p>
+	<div id = 'conty'>
+		<p id = 'reviews'> </p>
+	</div>
+	<p id = 'submissions' onclick = "newEntry()">submit a review &lt;3</p>
     <div id='map'></div>
     <script>
+	
+	function newEntry() {
+		document.getElementById(reviews) = "hey";
+		location.href = "submissions.html";
+	}
+	
     // The value for 'accessToken' begins with 'pk...'
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2Ftc21nciIsImEiOiJjbGduOXIxcGcwZGp2M2VudDN0OXk3cWw5In0.UiSK6syLTB30dzrXjxl7iw'; 
     const map = new mapboxgl.Map({
@@ -106,7 +133,6 @@
 	  document.getElementById('reviews').innerHTML = `<b>${feature.properties.Zipcode}</b><br>${feature.properties.Address}<br><br>Average Rating: ${feature.properties.Avg}<br><br><i>Reviews:</i><br>${feature.properties.Reviews}`;
 	  
 	});
-	
 
     </script>
   </body>
