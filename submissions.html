@@ -5,14 +5,129 @@
     <title>BAR CHART</title>
   </head>
   <body>
+	
+	<form 
+	  id = "form"
+	  method="POST" 
+	  action="https://script.google.com/macros/s/AKfycbzEDGLiDovNYIdTrMt7QHwgiVY351y0wvGsgfDC0YgH23HA_SH-0R5fF3CoorSFsXtl/exec"
+	  target = "dummyframe"
+	  autocomplete = "off"
+	>
+	  <p id = "heyy"> <br>Review a bar:</p>
+	  <input id = "inputb" name="Bar" type="text" placeholder="Bar" required>
+	  <input id = "inputb" name="Address" type="text" placeholder="Address" required>
+	  <input id = "inputb" name="Name" type="text" placeholder="Your Name" required>
+	  <input id = "inputb" name="Rating" type="text" placeholder="Rating (out of 5)" required>
+	  <textarea id = "inputb" name="Review" type="text" placeholder="Review" required></textarea>
+	  <button id = "btn" type="submit">Submit</button>
+	</form>
+	  <p id = "back" onClick = "goBack()"> </p>
+	
+	<iframe name="dummyframe" id="dummyframe" style="display: none"></iframe>
  
 	<style>
 		body {
-			background-color: #ff99b3;
+			background-color: #707682;
 		}
+		
+		#heyy {
+			color: white; 
+			font-size: x-large; 
+			font-family: Verdana, sans-serif;
+			}
+		
+		#back {
+			color: white; 
+			font-size: medium; 
+			font-family: Verdana, sans-serif;
+			text-align: center;
+			margin-top: 5%;
+			}
+			
+		#back:hover {cursor:pointer;color:#ff99b3;}
+		
+		#btn {
+			color: #ff99b3;
+			background-color: white;
+			outline: none;
+			border: none;
+			padding: 1vh 1vw;
+			width: 30%;
+			margin: 1vh 1vw;
+			margin-bottom: 2vh;
+		}
+		
+		#btn:hover {cursor:pointer;}
+		
+		input[type=text] {
+			color: #ff99b3;
+			border: none;
+			outline: none;
+			width: 80%;
+			padding: 1vh 1vw;
+			margin: 1vh 1vw;
+			box-sizing: border-box;
+			font-family: Verdana, sans-serif;
+		}
+		
+		textarea {
+			color: #ff99b3;
+			border: none;
+			outline: none;
+			width: 80%;
+			height: 20vh;
+			padding: 1vh 1vw;
+			margin: 1vh 1vw;
+			box-sizing: border-box;
+			font-family: Verdana, sans-serif;
+		}
+		
+		input[type=text]:focus {
+			border: none;
+			outline: none;
+		}
+		
+		::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+		  color: #ffcbd8;
+		  opacity: 1; /* Firefox */
+		}
+
+		:-ms-input-placeholder { /* Internet Explorer 10-11 */
+		  color: #ffcbd8;
+		}
+
+		::-ms-input-placeholder { /* Microsoft Edge */
+		  color: #ffcbd8;
+		}
+		
+		#form {
+			background-color: #ff99b3;
+			width: 50%;
+			margin-left: 25%;
+			margin-top: 10%;
+			text-align: center;
+		}
+		
+		#inputl {
+			height: 10;
+		}
+		
 	</style>
 	
 	<script>
+	
+const element = document.getElementById("btn");
+element.addEventListener("click", myFunction);
+
+function myFunction() {
+	document.getElementById("btn").innerHTML = "thanks!";
+	document.getElementById("back").innerHTML = "back to map?";
+}
+
+function goBack() {
+	location.href = "index.html";
+}
+
 	</script>
  
   </body>
