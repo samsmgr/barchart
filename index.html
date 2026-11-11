@@ -1,138 +1,1102 @@
 <!DOCTYPE html>
-<html lang='en'>
-  <head>
-    <meta charset='utf-8' />
-    <title>BAR CHART</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
-    <style>
-      body { 
-        margin: 0; 
-        padding: 0; 
-		background-color: #707682;
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>BAR CHART</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Mapbox GL JS -->
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+
+  <link
+    href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =====================================================
+       BASE
+       ===================================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #707682;
+      font-family: Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+
+    /* =====================================================
+       PAGE LAYOUT
+
+       Desktop:
+       -------------------------
+       |             | title   |
+       |    MAP      | reviews |
+       |             | submit  |
+       -------------------------
+
+       ===================================================== */
+
+    #page {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+
+    /* =====================================================
+       MAP
+       ===================================================== */
+
+    #map {
+      width: 80%;
+      height: 100%;
+      flex-shrink: 0;
+    }
+
+
+    /* =====================================================
+       RIGHT SIDEBAR
+       ===================================================== */
+
+    #sidebar {
+      display: flex;
+      flex-direction: column;
+
+      width: 20%;
+      height: 100%;
+
+      padding:
+        0.5rem
+        0.5rem
+        1rem
+        2%;
+
+      background-color: #707682;
+
+      min-width: 0;
+    }
+
+
+    /* =====================================================
+       TITLE
+       ===================================================== */
+
+    #title {
+      margin:
+        0
+        0
+        1rem
+        0;
+
+      padding-top: 0;
+
+      flex-shrink: 0;
+
+      color: white;
+
+      font-family: Verdana, sans-serif;
+
+      font-size: clamp(
+        1.5rem,
+        2.2vw,
+        2.2rem
+      );
+
+      line-height: 1.2;
+    }
+
+    #title:hover {
+      color: #ff99b3;
+      cursor: default;
+    }
+
+
+    /* =====================================================
+       REVIEWS
+       ===================================================== */
+
+    #conty {
+      flex: 1;
+
+      min-height: 0;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      padding-right: 0.5rem;
+
+      scrollbar-width: thin;
+      scrollbar-color:
+        #ff99b3
+        transparent;
+    }
+
+
+    /* Chrome / Edge / Safari scrollbar */
+
+    #conty::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #conty::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #conty::-webkit-scrollbar-thumb {
+      background-color: #ff99b3;
+      border-radius: 10px;
+    }
+
+
+    #reviews {
+      margin: 0;
+
+      color: #111;
+
+      font-family:
+        Verdana,
+        sans-serif;
+
+      font-size: 0.9rem;
+
+      line-height: 1.5;
+
+      overflow-wrap: break-word;
+    }
+
+    #reviews:hover {
+      cursor: default;
+    }
+
+
+    /* Initial message */
+
+    #instructions {
+      margin-top: 1rem;
+
+      color: white;
+
+      font-size: 0.85rem;
+
+      line-height: 1.5;
+    }
+
+
+    /* Review details */
+
+    .review-zipcode {
+      margin:
+        0
+        0
+        0.4rem
+        0;
+
+      color: white;
+
+      font-size: 1.1rem;
+    }
+
+    .review-address {
+      margin:
+        0
+        0
+        1.2rem
+        0;
+
+      color: #111;
+
+      line-height: 1.5;
+    }
+
+    .review-rating {
+      margin:
+        0
+        0
+        1.2rem
+        0;
+
+      color: #111;
+    }
+
+    .review-label {
+      margin:
+        0
+        0
+        0.4rem
+        0;
+
+      color: #111;
+
+      font-style: italic;
+    }
+
+    .review-text {
+      margin: 0;
+
+      color: #111;
+
+      white-space: pre-line;
+
+      line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       SUBMIT REVIEW
+       ===================================================== */
+
+    #submissions {
+      flex-shrink: 0;
+
+      display: inline-block;
+
+      align-self: flex-start;
+
+      margin:
+        1rem
+        0
+        0
+        0;
+
+      color: #ff99b3;
+
+      background: none;
+
+      border: none;
+
+      padding: 0;
+
+      font-family:
+        Verdana,
+        sans-serif;
+
+      font-size: large;
+
+      line-height: 1.3;
+
+      text-align: left;
+
+      cursor: pointer;
+
+      appearance: none;
+      -webkit-appearance: none;
+
+      transition:
+        color 0.15s ease;
+    }
+
+    #submissions:hover {
+      color: white;
+    }
+
+    #submissions:focus-visible {
+      color: white;
+
+      outline:
+        2px solid
+        #ff99b3;
+
+      outline-offset: 5px;
+    }
+
+
+    /* =====================================================
+       MAPBOX POPUP
+       ===================================================== */
+
+    .mapboxgl-popup-content {
+      font-family:
+        Verdana,
+        sans-serif;
+
+      font-size: 0.8rem;
+
+      line-height: 1.4;
+    }
+
+
+    /* =====================================================
+       TABLET
+       ===================================================== */
+
+    @media (max-width: 1000px) {
+
+      #map {
+        width: 72%;
       }
-      #map { 
-        position: absolute; 
-        top: 0; 
-        bottom: 0; 
-		left: 0;
-        width: 80%; 
+
+      #sidebar {
+        width: 28%;
+
+        padding-left: 1.5rem;
       }
-	  
-	  #reviews {
-	  font-family: Verdana, sans-serif;
-	  margin-right: 0.4%;
-	  }
-	  
-	  #submissions {
-	  position: absolute;
-	  left: 84%;
-	  top: 94%;
-	  font-family: Verdana, sans-serif;
-	  color: #ff99b3;
-	  font-size: large;
-	  }
-	  
-	  #submissions:hover {color:white; cursor:pointer;}
-	  
-	  #title {
-	  margin-left: 82%;
-	  margin-right: 2%;
-	  margin-top: 0.5%;
-	  font-family: Verdana, sans-serif;;
-	  font-size: xx-large;
-	  color: white;
-	  }
-	  
-	  #title:hover {color:#ff99b3; cursor: default;}
-	  
-	  #reviews:hover {cursor:default;}
-	  
-	  #conty {
-		height: 80%; 
-		width:17.5%; 
-		position: absolute;
-		left: 82%;
-		top: 10%;
-		overflow-y: scroll;
-	  }
-	  
-    </style>
-  </head>
-  <body>
-	<p id = 'title'>the bar chart</p>
-	<div id = 'conty'>
-		<p id = 'reviews'> </p>
-	</div>
-	<p onclick = "newEntry()" id = 'submissions'>submit a review &lt;3</p>
-    <div id='map'></div>
-    <script>
-	
-	function newEntry() {
-		location.href = "submissions.html";
-	}
-	
-    // The value for 'accessToken' begins with 'pk...'
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2Ftc21nciIsImEiOiJjbGduOXIxcGcwZGp2M2VudDN0OXk3cWw5In0.UiSK6syLTB30dzrXjxl7iw'; 
-    const map = new mapboxgl.Map({
-      container: 'map',
-      // Replace YOUR_STYLE_URL with your style URL.
-      style: 'mapbox://styles/samsmgr/clgo08y72007f01qtfq2b5oa9', 
-      center: [-73.9623606, 40.7392687],
-      zoom: 11.5
-    });
+
+      #title {
+        font-size: 1.7rem;
+      }
+
+    }
 
 
-	// Change it back to a pointer when it leaves.
-	map.on('mouseleave', 'Bars', () => {
-	map.getCanvas().style.cursor = '';
-	});
-	
-	const popup = new mapboxgl.Popup({
-	closeButton: false,
-	closeOnClick: false
-	});
-	 
-	map.on('mouseenter', 'Bars', (e) => {
-	// Change the cursor style as a UI indicator.
-	map.getCanvas().style.cursor = 'pointer';
-	popup.remove();
-	 
-	// Copy coordinates array.
-	const coordinates = e.features[0].geometry.coordinates.slice();
-	const description = e.features[0].properties.Zipcode + "<br>Average Rating: " + e.features[0].properties.Avg;
-	 
-	// Ensure that if the map is zoomed out such that multiple
-	// copies of the feature are visible, the popup appears
-	// over the copy being pointed to.
-	while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-	coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-	}
-	 
-	// Populate the popup and set its coordinates
-	// based on the feature found.
-	popup.setLngLat(coordinates).setHTML(description).addTo(map);
-	});
-	map.on('mouseleave', 'Bars', () => {
-	map.getCanvas().style.cursor = '';
-	popup.remove();
-	});
-	
-	map.on('click', (event) => {
-	  // If the user clicked on one of your markers, get its information.
-	  const features = map.queryRenderedFeatures(event.point, {
-		layers: ['Bars'] // replace with your layer name
-	  });
-	  if (!features.length) {
-		return;
-	  }
-	  const feature = features[0];
-	  
-	  document.getElementById('reviews').innerHTML = `<b>${feature.properties.Zipcode}</b><br>${feature.properties.Address}<br><br>Average Rating: ${feature.properties.Avg}<br><br><i>Reviews:</i><br>${feature.properties.Reviews}`;
-	  
-	});
+    /* =====================================================
+       MOBILE
+       ===================================================== */
 
-    </script>
-  </body>
+    @media (max-width: 700px) {
+
+      html,
+      body {
+        height: auto;
+
+        min-height: 100%;
+      }
+
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+
+      /*
+       * Stack the map and reviews vertically.
+       */
+
+      #page {
+        display: flex;
+
+        flex-direction: column;
+
+        width: 100%;
+
+        min-height: 100vh;
+
+        height: auto;
+      }
+
+
+      /* MAP */
+
+      #map {
+        order: 1;
+
+        width: 100%;
+
+        /*
+         * 58vh keeps the map prominent without
+         * hiding the review area completely.
+         */
+        height: 58vh;
+
+        min-height: 350px;
+
+        flex-shrink: 0;
+      }
+
+
+      /* SIDEBAR */
+
+      #sidebar {
+        order: 2;
+
+        width: 100%;
+        height: auto;
+
+        min-height: 42vh;
+
+        padding:
+          1.3rem
+          1.2rem
+          calc(
+            1.5rem +
+            env(safe-area-inset-bottom)
+          )
+          1.2rem;
+      }
+
+
+      /* TITLE */
+
+      #title {
+        margin:
+          0
+          0
+          1rem
+          0;
+
+        padding: 0;
+
+        font-size: 1.8rem;
+      }
+
+
+      /* REVIEW CONTAINER */
+
+      #conty {
+        flex: none;
+
+        width: 100%;
+
+        min-height: 100px;
+        max-height: none;
+
+        overflow: visible;
+
+        padding: 0;
+      }
+
+
+      #reviews {
+        font-size: 0.9rem;
+      }
+
+
+      /* SUBMIT */
+
+      #submissions {
+        margin-top: 1.5rem;
+
+        /*
+         * Larger touch target without changing
+         * the original text-link appearance.
+         */
+        min-height: 44px;
+
+        font-size: 1rem;
+      }
+
+    }
+
+
+    /* =====================================================
+       SMALL PHONES
+       ===================================================== */
+
+    @media (max-width: 400px) {
+
+      #map {
+        height: 52vh;
+
+        min-height: 300px;
+      }
+
+      #sidebar {
+        padding:
+          1rem
+          1rem
+          calc(
+            1.2rem +
+            env(safe-area-inset-bottom)
+          )
+          1rem;
+      }
+
+      #title {
+        font-size: 1.55rem;
+      }
+
+    }
+
+
+    /* =====================================================
+       REDUCED MOTION
+       ===================================================== */
+
+    @media (
+      prefers-reduced-motion:
+      reduce
+    ) {
+
+      #submissions {
+        transition: none;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <main id="page">
+
+
+    <!-- ==================================================
+         MAP
+         ================================================== -->
+
+    <div
+      id="map"
+      aria-label="Map of bar reviews"
+    ></div>
+
+
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
+
+    <aside
+      id="sidebar"
+      aria-label="Bar reviews"
+    >
+
+      <p id="title">
+        the bar chart
+      </p>
+
+
+      <div id="conty">
+
+        <div
+          id="reviews"
+          aria-live="polite"
+        >
+          <p id="instructions">
+            click a location on the map
+            to see its reviews &lt;3
+          </p>
+        </div>
+
+      </div>
+
+
+      <button
+        id="submissions"
+        type="button"
+      >
+        submit a review &lt;3
+      </button>
+
+    </aside>
+
+  </main>
+
+
+  <script>
+
+    /* =====================================================
+       SUBMIT REVIEW
+       ===================================================== */
+
+    const submissionButton =
+      document.getElementById(
+        "submissions"
+      );
+
+
+    submissionButton.addEventListener(
+      "click",
+      () => {
+
+        window.location.href =
+          "submissions.html";
+
+      }
+    );
+
+
+    /* =====================================================
+       MAPBOX
+       ===================================================== */
+
+    mapboxgl.accessToken =
+      "pk.eyJ1Ijoic2Ftc21nciIsImEiOiJjbGduOXIxcGcwZGp2M2VudDN0OXk3cWw5In0.UiSK6syLTB30dzrXjxl7iw";
+
+
+    const map =
+      new mapboxgl.Map({
+
+        container: "map",
+
+        style:
+          "mapbox://styles/samsmgr/clgo08y72007f01qtfq2b5oa9",
+
+        center: [
+          -73.9623606,
+          40.7392687
+        ],
+
+        zoom: 11.5
+
+      });
+
+
+    /* =====================================================
+       POPUP
+       ===================================================== */
+
+    const popup =
+      new mapboxgl.Popup({
+
+        closeButton: false,
+
+        closeOnClick: false
+
+      });
+
+
+    /* =====================================================
+       WAIT FOR MAP TO LOAD
+       ===================================================== */
+
+    map.on(
+      "load",
+      () => {
+
+
+        /*
+         * Check that your existing Mapbox
+         * layer actually exists.
+         */
+
+        if (!map.getLayer("Bars")) {
+
+          console.warn(
+            'The Mapbox layer "Bars" was not found.'
+          );
+
+          return;
+
+        }
+
+
+        /* ===============================================
+           MOUSE ENTER
+           =============================================== */
+
+        map.on(
+          "mouseenter",
+          "Bars",
+          (event) => {
+
+            map
+              .getCanvas()
+              .style
+              .cursor =
+              "pointer";
+
+
+            /*
+             * Confirm that we actually received
+             * a feature.
+             */
+
+            if (
+              !event.features ||
+              !event.features.length
+            ) {
+
+              return;
+
+            }
+
+
+            const feature =
+              event.features[0];
+
+
+            /*
+             * This assumes Bars contains point
+             * geometry, consistent with your
+             * original code.
+             */
+
+            if (
+              !feature.geometry ||
+              !feature.geometry.coordinates
+            ) {
+
+              return;
+
+            }
+
+
+            const coordinates =
+              feature
+                .geometry
+                .coordinates
+                .slice();
+
+
+            const zipcode =
+              feature.properties.Zipcode ||
+              "Location";
+
+
+            const average =
+              feature.properties.Avg ||
+              "Not rated";
+
+
+            /*
+             * Account for wrapped copies of the map.
+             */
+
+            while (
+              Math.abs(
+                event.lngLat.lng -
+                coordinates[0]
+              ) > 180
+            ) {
+
+              coordinates[0] +=
+                event.lngLat.lng >
+                coordinates[0]
+                  ? 360
+                  : -360;
+
+            }
+
+
+            /*
+             * Build popup content safely instead
+             * of inserting feature data as HTML.
+             */
+
+            const popupContent =
+              document.createElement(
+                "div"
+              );
+
+
+            const popupZipcode =
+              document.createElement(
+                "strong"
+              );
+
+            popupZipcode.textContent =
+              zipcode;
+
+
+            const lineBreak =
+              document.createElement(
+                "br"
+              );
+
+
+            const popupRating =
+              document.createElement(
+                "span"
+              );
+
+            popupRating.textContent =
+              "Average Rating: " +
+              average;
+
+
+            popupContent.append(
+              popupZipcode,
+              lineBreak,
+              popupRating
+            );
+
+
+            popup
+              .setLngLat(
+                coordinates
+              )
+              .setDOMContent(
+                popupContent
+              )
+              .addTo(map);
+
+          }
+        );
+
+
+        /* ===============================================
+           MOUSE LEAVE
+           =============================================== */
+
+        map.on(
+          "mouseleave",
+          "Bars",
+          () => {
+
+            map
+              .getCanvas()
+              .style
+              .cursor =
+              "";
+
+            popup.remove();
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       CLICK ON BAR
+       ===================================================== */
+
+    map.on(
+      "click",
+      (event) => {
+
+
+        /*
+         * Avoid querying the layer before
+         * it exists.
+         */
+
+        if (
+          !map.getLayer("Bars")
+        ) {
+
+          return;
+
+        }
+
+
+        const features =
+          map.queryRenderedFeatures(
+            event.point,
+            {
+              layers: [
+                "Bars"
+              ]
+            }
+          );
+
+
+        /*
+         * Clicking somewhere else on the
+         * map does nothing.
+         */
+
+        if (
+          !features.length
+        ) {
+
+          return;
+
+        }
+
+
+        const feature =
+          features[0];
+
+
+        /* ===============================================
+           GET DATA
+           =============================================== */
+
+        const zipcode =
+          feature.properties.Zipcode ||
+          "Location";
+
+
+        const address =
+          feature.properties.Address ||
+          "Address unavailable";
+
+
+        const average =
+          feature.properties.Avg ||
+          "Not rated";
+
+
+        const reviews =
+          feature.properties.Reviews ||
+          "No reviews have been submitted yet.";
+
+
+        /* ===============================================
+           BUILD REVIEW DISPLAY
+           =============================================== */
+
+        const reviewsContainer =
+          document.getElementById(
+            "reviews"
+          );
+
+
+        /*
+         * Remove the old content first.
+         */
+
+        reviewsContainer
+          .replaceChildren();
+
+
+        /* ZIP CODE */
+
+        const zipcodeElement =
+          document.createElement(
+            "p"
+          );
+
+        zipcodeElement.className =
+          "review-zipcode";
+
+        const zipcodeBold =
+          document.createElement(
+            "b"
+          );
+
+        zipcodeBold.textContent =
+          zipcode;
+
+        zipcodeElement.appendChild(
+          zipcodeBold
+        );
+
+
+        /* ADDRESS */
+
+        const addressElement =
+          document.createElement(
+            "p"
+          );
+
+        addressElement.className =
+          "review-address";
+
+        addressElement.textContent =
+          address;
+
+
+        /* AVERAGE RATING */
+
+        const ratingElement =
+          document.createElement(
+            "p"
+          );
+
+        ratingElement.className =
+          "review-rating";
+
+        ratingElement.textContent =
+          "Average Rating: " +
+          average;
+
+
+        /* REVIEWS LABEL */
+
+        const reviewsLabel =
+          document.createElement(
+            "p"
+          );
+
+        reviewsLabel.className =
+          "review-label";
+
+        reviewsLabel.textContent =
+          "Reviews:";
+
+
+        /* REVIEW TEXT */
+
+        const reviewText =
+          document.createElement(
+            "p"
+          );
+
+        reviewText.className =
+          "review-text";
+
+        reviewText.textContent =
+          reviews;
+
+
+        /* ADD EVERYTHING */
+
+        reviewsContainer.append(
+          zipcodeElement,
+          addressElement,
+          ratingElement,
+          reviewsLabel,
+          reviewText
+        );
+
+
+        /* ===============================================
+           MOBILE BEHAVIOR
+           =============================================== */
+
+        /*
+         * On a phone, bring the review section into
+         * view after someone taps a map location.
+         *
+         * On desktop, the sidebar remains stationary.
+         */
+
+        if (
+          window.matchMedia(
+            "(max-width: 700px)"
+          ).matches
+        ) {
+
+          document
+            .getElementById(
+              "title"
+            )
+            .scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       RESPONSIVE MAP RESIZING
+       ===================================================== */
+
+    /*
+     * Mapbox needs to be notified if its container
+     * changes dimensions, particularly when crossing
+     * between the desktop and mobile layouts.
+     */
+
+    let resizeTimer;
+
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        clearTimeout(
+          resizeTimer
+        );
+
+
+        resizeTimer =
+          setTimeout(
+            () => {
+
+              map.resize();
+
+            },
+            100
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+
 </html>
